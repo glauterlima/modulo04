@@ -16,6 +16,7 @@ class User extends Model {
       }
     );
 
+    /* função para criar o hash do password informado pelo usuário */
     this.addHook('beforeSave', async user => {
       if (user.password) {
         user.password_hash = await bcrypt.hash(user.password, 8);
@@ -25,9 +26,12 @@ class User extends Model {
     return this;
   }
 
+  static associate(models) {
+    this.belongsTo(models.File, { foreignKey: 'avatar_id', as: 'avatar' });
+  }
+
   checkPassword(password) {
     return bcrypt.compare(password, this.password_hash);
   }
 }
-
 export default User;
