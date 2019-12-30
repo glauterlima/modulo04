@@ -21,12 +21,11 @@ class DemandController {
     });
   }
 
-  async update(req, res) {
+  /* async update(req, res) {
     const schema = Yup.object().shape({
       name: Yup.string().required(),
       description: Yup.string().required(),
       type: Yup.string().required(),
-      system: Yup.string().required(),
     });
 
     if (!(await schema.isValid(req.body))) {
@@ -43,7 +42,7 @@ class DemandController {
       type,
       system,
     });
-  }
+  } */
 }
 
 export default new DemandController();
