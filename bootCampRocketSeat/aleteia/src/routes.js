@@ -8,6 +8,7 @@ import FileController from './app/controllers/FileController';
 import ProviderController from './app/controllers/ProviderController';
 import SystemController from './app/controllers/SystemController';
 import DemandController from './app/controllers/DemandController';
+import CountController from './app/controllers/CountController';
 
 import authMiddleware from './app/middlewares/auth';
 
@@ -22,9 +23,10 @@ routes.post('/demands', DemandController.store);
 routes.use(authMiddleware); /** só vale para as rotas posteriores */
 
 routes.put('/users', UserController.update);
-routes.put('/demands', DemandController.update);
 
 routes.get('/providers', ProviderController.index);
+
+routes.post('/counts', CountController.store);
 
 routes.post('/files', upload.single('file'), FileController.store);
 
