@@ -2,6 +2,14 @@ import * as Yup from 'yup';
 import System from '../models/System';
 
 class SystemController {
+  async index(req, res) {
+    const systems = await System.findAll({
+      order: ['name'],
+      attributes: ['id', 'name', 'responsavel', 'fronteira', 'linguagem'],
+    });
+    return res.json(systems);
+  }
+
   async store(req, res) {
     const schema = Yup.object().shape({
       name: Yup.string().required(),

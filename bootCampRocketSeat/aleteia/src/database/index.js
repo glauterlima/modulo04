@@ -5,10 +5,11 @@ import File from '../app/models/File';
 import System from '../app/models/System';
 import Demand from '../app/models/Demand';
 import Count from '../app/models/Count';
+import Company from '../app/models/Company';
 
 import databaseConfig from '../config/database';
 
-const models = [User, File, System, Demand, Count];
+const models = [User, File, System, Demand, Count, Company];
 
 class Database {
   constructor() {

@@ -1,8 +1,53 @@
 import * as Yup from 'yup';
 import Count from '../models/Count';
 import User from '../models/User';
+import File from '../models/File';
+import Demand from '../models/Demand';
+import System from '../models/System';
 
 class CountController {
+  async index(req, res) {
+    const counts = await Count.findAll({
+      where: { canceled_at: null },
+      order: ['date'],
+      attributes: ['id', 'date'],
+      include: [
+        {
+          model: User,
+          as: 'provider',
+          attributes: ['id', 'name'],
+          include: [
+            {
+              model: File,
+              as: 'avatar',
+              attributes: ['id', 'path', 'url'],
+            },
+          ],
+        },
+        {
+          model: Demand,
+          as: 'demand',
+          attributes: ['id', 'name', 'description', 'type'],
+          include: [
+            {
+              model: System,
+              as: 'system',
+              attributes: [
+                'id',
+                'name',
+                'responsavel',
+                'fronteira',
+                'linguagem',
+              ],
+            },
+          ],
+        },
+      ],
+    });
+
+    return res.json(counts);
+  }
+
   async store(req, res) {
     const schema = Yup.object().shape({
       date: Yup.date().required(),
