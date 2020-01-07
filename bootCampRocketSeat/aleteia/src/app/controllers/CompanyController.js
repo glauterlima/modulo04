@@ -5,7 +5,7 @@ class CompanyController {
   async index(req, res) {
     const companies = await Company.findAll({
       order: ['name'],
-      attributes: ['cnpj', 'name'],
+      attributes: ['id', 'cnpj', 'name'],
     });
     return res.json(companies);
   }

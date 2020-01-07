@@ -9,9 +9,10 @@ import ProviderController from './app/controllers/ProviderController';
 import SystemController from './app/controllers/SystemController';
 import DemandController from './app/controllers/DemandController';
 import CountController from './app/controllers/CountController';
+import CompanyController from './app/controllers/CompanyController';
+import ContractController from './app/controllers/ContractController';
 
 import authMiddleware from './app/middlewares/auth';
-import CompanyController from './app/controllers/CompanyController';
 
 const routes = new Router();
 const upload = multer(multerConfig);
@@ -25,7 +26,11 @@ routes.post('/systems', SystemController.store);
 routes.get('/companies', CompanyController.index);
 routes.post('/companies', CompanyController.store);
 
+routes.get('/demands', DemandController.index);
 routes.post('/demands', DemandController.store);
+
+routes.get('/contracts', ContractController.index);
+routes.post('/contracts', ContractController.store);
 
 routes.use(authMiddleware); /** só vale para as rotas posteriores */
 

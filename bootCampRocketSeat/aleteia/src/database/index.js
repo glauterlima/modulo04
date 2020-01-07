@@ -6,10 +6,11 @@ import System from '../app/models/System';
 import Demand from '../app/models/Demand';
 import Count from '../app/models/Count';
 import Company from '../app/models/Company';
+import Contract from '../app/models/Contract';
 
 import databaseConfig from '../config/database';
 
-const models = [User, File, System, Demand, Count, Company];
+const models = [User, File, System, Demand, Count, Company, Contract];
 
 class Database {
   constructor() {

@@ -1,7 +1,23 @@
 import * as Yup from 'yup';
 import Demand from '../models/Demand';
+import System from '../models/System';
 
 class DemandController {
+  async index(req, res) {
+    const demands = await Demand.findAll({
+      order: ['name'],
+      attributes: ['name', 'description', 'type'],
+      include: [
+        {
+          model: System,
+          as: 'system',
+          attributes: ['id', 'name'],
+        },
+      ],
+    });
+    return res.json(demands);
+  }
+
   async store(req, res) {
     const schema = Yup.object().shape({
       name: Yup.string().required(),
