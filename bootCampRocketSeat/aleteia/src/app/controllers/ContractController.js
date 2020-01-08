@@ -4,6 +4,8 @@ import Company from '../models/Company';
 
 class ContractController {
   async index(req, res) {
+    const { page = 1 } = req.query; /** paginação */
+
     const contracts = await Contract.findAll({
       order: ['numero_contrato'],
       attributes: [
@@ -15,6 +17,8 @@ class ContractController {
         'preco_unit_pf',
         'preco_total_contrato',
       ],
+      limit: 20,
+      offset: (page - 1) * 20,
       include: [
         {
           model: Company,

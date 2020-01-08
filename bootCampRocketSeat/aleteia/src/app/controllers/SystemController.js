@@ -3,9 +3,13 @@ import System from '../models/System';
 
 class SystemController {
   async index(req, res) {
+    const { page = 1 } = req.query; /** paginação */
+
     const systems = await System.findAll({
       order: ['name'],
       attributes: ['id', 'name', 'responsavel', 'fronteira', 'linguagem'],
+      limit: 20,
+      offset: (page - 1) * 20,
     });
     return res.json(systems);
   }

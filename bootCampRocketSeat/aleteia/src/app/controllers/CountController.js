@@ -7,10 +7,14 @@ import System from '../models/System';
 
 class CountController {
   async index(req, res) {
+    const { page = 1 } = req.query; /** paginação */
+
     const counts = await Count.findAll({
       where: { canceled_at: null },
       order: ['date'],
       attributes: ['id', 'date'],
+      limit: 20,
+      offset: (page - 1) * 20,
       include: [
         {
           model: User,
