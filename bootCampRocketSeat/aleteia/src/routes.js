@@ -11,6 +11,7 @@ import DemandController from './app/controllers/DemandController';
 import CountController from './app/controllers/CountController';
 import CompanyController from './app/controllers/CompanyController';
 import ContractController from './app/controllers/ContractController';
+import ScheduleController from './app/controllers/ScheduleController';
 
 import authMiddleware from './app/middlewares/auth';
 
@@ -40,6 +41,8 @@ routes.get('/providers', ProviderController.index);
 
 routes.get('/counts', CountController.index);
 routes.post('/counts', CountController.store);
+
+routes.get('/schedule', ScheduleController.index);
 
 routes.post('/files', upload.single('file'), FileController.store);
 
