@@ -1,9 +1,11 @@
 import * as Yup from 'yup';
+
 import Count from '../models/Count';
 import User from '../models/User';
 import File from '../models/File';
 import Demand from '../models/Demand';
 import System from '../models/System';
+import Notification from '../schemas/Notification';
 
 class CountController {
   async index(req, res) {
@@ -87,6 +89,22 @@ class CountController {
       provider_id,
       demand_id,
       date,
+    });
+
+    const user = await User.findByPk(req.userId);
+    const demand = await Demand.findOne({
+      where: { id: demand_id },
+    });
+
+    /** const hourStart = startOfHour(parseIso(date));* */
+    /** const formattedDate = format(hourStart, "'dia' dd 'de' MMMM', às' H:mm'h", {
+      locale: pt,
+    });* */
+
+    /** Notify Provider (servidor do TRF1) */
+    await Notification.create({
+      content: `Contagem ${demand.name} de ${user.name} registrada!`,
+      user: provider_id,
     });
 
     return res.json(count);
