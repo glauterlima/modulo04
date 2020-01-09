@@ -12,6 +12,7 @@ import CountController from './app/controllers/CountController';
 import CompanyController from './app/controllers/CompanyController';
 import ContractController from './app/controllers/ContractController';
 import ScheduleController from './app/controllers/ScheduleController';
+import NotificationController from './app/controllers/NotificationController';
 
 import authMiddleware from './app/middlewares/auth';
 
@@ -43,6 +44,8 @@ routes.get('/counts', CountController.index);
 routes.post('/counts', CountController.store);
 
 routes.get('/schedule', ScheduleController.index);
+
+routes.get('/notifications', NotificationController.index);
 
 routes.post('/files', upload.single('file'), FileController.store);
 
