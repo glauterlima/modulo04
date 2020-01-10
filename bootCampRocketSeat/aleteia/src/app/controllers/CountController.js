@@ -6,6 +6,8 @@ import Demand from '../models/Demand';
 import System from '../models/System';
 import Notification from '../schemas/Notification';
 
+import Mail from '../../lib/Mail';
+
 class CountController {
   async index(req, res) {
     const { page = 1 } = req.query; /** paginação */
@@ -110,9 +112,17 @@ class CountController {
   }
 
   async delete(req, res) {
-    const count = await Count.findByPk(req.params.id);
+    const count = await Count.findByPk(req.params.id, {
+      include: [
+        {
+          model: User,
+          as: 'provider',
+          attributes: ['name', 'email'],
+        },
+      ],
+    });
 
-    if (count.user_id !== req.userId) {
+    if (!count.provider === true) {
       return res.status(401).json({
         error: "You don't have permission to cancel this count!",
       });
@@ -121,6 +131,12 @@ class CountController {
     count.canceled_at = new Date();
 
     await count.save();
+
+    await Mail.sendMail({
+      to: `${count.provider.name} <${count.provider.email}>`,
+      subject: 'Contagem cancelada',
+      text: 'Uma contagem foi cancelada',
+    });
 
     return res.json(count);
   }
