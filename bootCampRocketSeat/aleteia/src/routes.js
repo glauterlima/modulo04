@@ -42,6 +42,7 @@ routes.get('/providers', ProviderController.index);
 
 routes.get('/counts', CountController.index);
 routes.post('/counts', CountController.store);
+routes.delete('/counts/:id', CountController.delete);
 
 routes.get('/schedule', ScheduleController.index);
 

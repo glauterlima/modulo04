@@ -1,5 +1,4 @@
 import * as Yup from 'yup';
-
 import Count from '../models/Count';
 import User from '../models/User';
 import File from '../models/File';
@@ -106,6 +105,22 @@ class CountController {
       content: `Contagem ${demand.name} de ${user.name} registrada!`,
       user: provider_id,
     });
+
+    return res.json(count);
+  }
+
+  async delete(req, res) {
+    const count = await Count.findByPk(req.params.id);
+
+    if (count.user_id !== req.userId) {
+      return res.status(401).json({
+        error: "You don't have permission to cancel this count!",
+      });
+    }
+
+    count.canceled_at = new Date();
+
+    await count.save();
 
     return res.json(count);
   }
