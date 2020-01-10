@@ -108,6 +108,12 @@ class CountController {
       user: provider_id,
     });
 
+    await Mail.sendMail({
+      to: `${user.name} <${user.email}>`,
+      subject: 'Contagem registrada',
+      text: `Uma contagem para a demanda ${demand.name} foi registrada por ${user.name}`,
+    });
+
     return res.json(count);
   }
 
