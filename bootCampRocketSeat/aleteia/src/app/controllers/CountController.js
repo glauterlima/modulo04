@@ -1,14 +1,14 @@
 import * as Yup from 'yup';
-import { format, parseISO } from 'date-fns';
-import pt from 'date-fns/locale/pt';
 import Count from '../models/Count';
 import User from '../models/User';
 import File from '../models/File';
 import Demand from '../models/Demand';
 import System from '../models/System';
 import Notification from '../schemas/Notification';
+import CancellationMail from '../jobs/CancellationMail';
+import RegistrationMail from '../jobs/RegistrationMail';
 
-import Mail from '../../lib/Mail';
+import Queue from '../../lib/Queue';
 
 class CountController {
   async index(req, res) {
@@ -102,32 +102,17 @@ class CountController {
       where: { id: demand_id },
     });
 
-    /* const formattedDate = format(
-      parseISO(date),
-      "'dia' dd 'de' MMMM', às' H:mm'h",
-      {
-        locale: pt,
-      }
-    ); */
-
     /** Notify Provider (servidor do TRF1) */
     await Notification.create({
       content: `Contagem ${demand.name} de ${user.name} registrada!`,
       user: provider_id,
     });
 
-    await Mail.sendMail({
-      to: `${user.name} <${user.email}>`,
-      subject: 'Contagem registrada',
-      template: 'registration',
-      context: {
-        demand: demand.name,
-        provider: provider.name,
-        user: user.name,
-        date: format(parseISO(date), "'dia' dd 'de' MMMM', às' H:mm'h'", {
-          locale: pt,
-        }),
-      },
+    await Queue.add(RegistrationMail.key, {
+      user,
+      provider,
+      demand,
+      date,
     });
 
     return res.json(count);
@@ -164,18 +149,8 @@ class CountController {
 
     await count.save();
 
-    await Mail.sendMail({
-      to: `${count.provider.name} <${count.provider.email}>`,
-      subject: 'Contagem cancelada',
-      template: 'cancellation',
-      context: {
-        demand: count.demand.name,
-        provider: count.provider.name,
-        user: count.user.name,
-        date: format(count.canceled_at, "'dia' dd 'de' MMMM', às' H:mm'h'", {
-          locale: pt,
-        }),
-      },
+    await Queue.add(CancellationMail.key, {
+      count,
     });
 
     return res.json(count);
