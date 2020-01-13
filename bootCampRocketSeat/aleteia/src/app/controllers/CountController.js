@@ -1,4 +1,6 @@
 import * as Yup from 'yup';
+import { format, parseISO } from 'date-fns';
+import pt from 'date-fns/locale/pt';
 import Count from '../models/Count';
 import User from '../models/User';
 import File from '../models/File';
@@ -93,14 +95,20 @@ class CountController {
     });
 
     const user = await User.findByPk(req.userId);
+    const provider = await User.findOne({
+      where: { id: req.userId, provider: true },
+    });
     const demand = await Demand.findOne({
       where: { id: demand_id },
     });
 
-    /** const hourStart = startOfHour(parseIso(date));* */
-    /** const formattedDate = format(hourStart, "'dia' dd 'de' MMMM', às' H:mm'h", {
-      locale: pt,
-    });* */
+    /* const formattedDate = format(
+      parseISO(date),
+      "'dia' dd 'de' MMMM', às' H:mm'h",
+      {
+        locale: pt,
+      }
+    ); */
 
     /** Notify Provider (servidor do TRF1) */
     await Notification.create({
@@ -111,7 +119,15 @@ class CountController {
     await Mail.sendMail({
       to: `${user.name} <${user.email}>`,
       subject: 'Contagem registrada',
-      text: `Uma contagem para a demanda ${demand.name} foi registrada por ${user.name}`,
+      template: 'registration',
+      context: {
+        demand: demand.name,
+        provider: provider.name,
+        user: user.name,
+        date: format(parseISO(date), "'dia' dd 'de' MMMM', às' H:mm'h'", {
+          locale: pt,
+        }),
+      },
     });
 
     return res.json(count);
@@ -124,6 +140,16 @@ class CountController {
           model: User,
           as: 'provider',
           attributes: ['name', 'email'],
+        },
+        {
+          model: User,
+          as: 'user',
+          attributes: ['name'],
+        },
+        {
+          model: Demand,
+          as: 'demand',
+          attributes: ['id', 'name'],
         },
       ],
     });
@@ -141,7 +167,15 @@ class CountController {
     await Mail.sendMail({
       to: `${count.provider.name} <${count.provider.email}>`,
       subject: 'Contagem cancelada',
-      text: 'Uma contagem foi cancelada',
+      template: 'cancellation',
+      context: {
+        demand: count.demand.name,
+        provider: count.provider.name,
+        user: count.user.name,
+        date: format(count.canceled_at, "'dia' dd 'de' MMMM', às' H:mm'h'", {
+          locale: pt,
+        }),
+      },
     });
 
     return res.json(count);
