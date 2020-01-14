@@ -13,6 +13,7 @@ import CompanyController from './app/controllers/CompanyController';
 import ContractController from './app/controllers/ContractController';
 import ScheduleController from './app/controllers/ScheduleController';
 import NotificationController from './app/controllers/NotificationController';
+import TaskDayController from './app/controllers/TaskDayController';
 
 import authMiddleware from './app/middlewares/auth';
 
@@ -39,6 +40,7 @@ routes.use(authMiddleware); /** só vale para as rotas posteriores */
 routes.put('/users', UserController.update);
 
 routes.get('/providers', ProviderController.index);
+routes.get('/providers/:providerId/taskday', TaskDayController.index);
 
 routes.get('/counts', CountController.index);
 routes.post('/counts', CountController.store);
