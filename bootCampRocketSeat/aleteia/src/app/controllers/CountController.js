@@ -14,7 +14,7 @@ class CountController {
   async index(req, res) {
     const { page = 1 } = req.query; /** paginação */
 
-    const counts = await Count.findAll({
+    const counts = await Count.finddAll({
       where: { canceled_at: null },
       order: ['date'],
       attributes: ['id', 'date'],
