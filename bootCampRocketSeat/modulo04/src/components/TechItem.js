@@ -17,7 +17,8 @@ TechItem.defaultProps = {
 };
 
 TechItem.propTypes = {
-  tech: PropTypes.string.isRequired
+  tech: PropTypes.string,
+  onDelete: PropTypes.func.isRequired
 };
 
 export default TechItem;
