@@ -1,10 +1,10 @@
 import React from "react";
 import "./App.css";
 
-import role from "./assets/ROLE.JPG";
+import TechList from "./components/TechList";
 
 function App() {
-  return <img width="200" src={role} />;
+  return <TechList />;
 }
 
 export default App;
